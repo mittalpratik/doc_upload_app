@@ -1,0 +1,51 @@
+<section class="upload-shell">
+  <div class="upload-top">
+    <h2>Upload documents</h2>
+    <div class="actions">
+      <button (click)="uploadService.cancelAll()" class="muted">Cancel all</button>
+      <button (click)="uploadService.clearAllAndCancel()" class="danger">Clear</button>
+    </div>
+  </div>
+
+  <div
+    class="drop-zone"
+    [class.dragover]="isDragOver"
+    (dragover)="onDragOver($event)"
+    (dragenter)="onDragEnter($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)"
+    tabindex="0"
+    role="region"
+    aria-label="File upload drop zone">
+    <input #fileInput type="file" multiple accept=".pdf,.docx,.txt" (change)="onFileInputChange($event)" class="visually-hidden" />
+    <div class="drop-inner">
+      <p class="big">Drag & drop files here</p>
+      <p class="muted">or <button class="link-like" (click)="openFilePicker()">choose files</button></p>
+      <p class="muted small">Supported: PDF, DOCX, TXT — max 10MB</p>
+    </div>
+  </div>
+
+  <!-- Queue -->
+  <div class="queue">
+    <div *ngIf="(uploadService.tasks$ | async)?.length === 0" class="muted small">No files in queue</div>
+
+    <div *ngFor="let t of uploadService.tasks$ | async; trackBy: trackByTaskId" class="task-row">
+      <div class="meta">
+        <div class="name">{{ t.file.name }}</div>
+        <div class="small muted">{{ t.file.size | number }} bytes</div>
+      </div>
+
+      <div class="progress-wrap">
+        <progress [value]="t.progress" max="100"></progress>
+        <div class="percent">{{ t.progress }}%</div>
+      </div>
+
+      <div class="controls">
+        <span class="status">{{ t.status }}</span>
+
+        <button *ngIf="t.status === 'uploading'" (click)="uploadService.cancel(t.id)">Cancel</button>
+        <button *ngIf="t.status === 'failed' || t.status === 'canceled'" (click)="uploadService.retry(t.id)">Retry</button>
+      </div>
+    </div>
+  </div>
+</section>

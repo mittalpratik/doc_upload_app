@@ -1,0 +1,33 @@
+<section class="auth-shell">
+  <div class="auth-card">
+    <h1 class="title">Sign in</h1>
+
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" novalidate class="login-form">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="you@example.com" required />
+      <small class="error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required']">
+        Email is required.
+      </small>
+      <small class="error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['email']">
+        Enter a valid email.
+      </small>
+
+      <label for="password">Password</label>
+      <input id="password" type="password" formControlName="password" placeholder="••••••••" required />
+      <small class="error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']">
+        Password is required.
+      </small>
+      <small class="error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['minlength']">
+        Minimum {{ loginForm.get('password')?.errors?.['minlength']?.requiredLength }} characters.
+      </small>
+
+      <div class="actions">
+        <button type="submit" [disabled]="loginForm.invalid || loading">
+          <span *ngIf="!loading">Sign in</span>
+          <span *ngIf="loading">Signing in…</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
